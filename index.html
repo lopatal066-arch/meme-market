@@ -206,6 +206,7 @@ h1,h2,h3,p{margin:0}
 .bee-ctrls button{
   width:84px;height:52px;border-radius:14px;border:1px solid var(--line);background:#16132a;font-size:20px;font-weight:900;transition:.1s
 }
+.bee-ctrls button.wide{width:150px;font-size:13px;letter-spacing:.12em;color:var(--lime);border-color:rgba(184,255,58,.35)}
 .bee-ctrls button:active{background:var(--lime);color:#0b0a12}
 .overlay{
   position:absolute;inset:0;display:grid;place-content:center;text-align:center;padding:24px;
@@ -311,7 +312,7 @@ h1,h2,h3,p{margin:0}
         <span class="rarity">очень сложно</span>
         <div class="art"><span class="bigemoji">🐝</span></div>
         <h3>Удержись на шмеле</h3>
-        <p class="desc">30 секунд на спине у Пояша. Он не хочет, чтобы ты удержался.</p>
+        <p class="desc">Держи баланс, прыгай через ос на пробел и лови чемоданы с деньгами.</p>
         <div class="price"><button class="btn primary" data-go="bee">Играть</button></div>
       </article>
     </div>
@@ -388,17 +389,18 @@ h1,h2,h3,p{margin:0}
     <div class="bee-stage" style="margin-top:14px">
       <canvas id="beeCanvas"></canvas>
       <div class="bee-hud">
-        <div class="pill">← → или A / D</div>
-        <div class="pill" id="beeStatus">цель: 30 сек</div>
+        <div class="pill">← → баланс · ПРОБЕЛ прыжок</div>
+        <div class="pill"><span id="beeLives">♥♥♥</span> · <span id="beeMoney">0 ₽</span> · <span id="beeStatus">цель: 30 сек</span></div>
       </div>
       <div class="overlay hidden" id="beeOverlay">
         <h3 id="beeOverTitle">Готов?</h3>
-        <p id="beeOverText">Держи баланс стрелками. Пояш будет вырываться.</p>
+        <p id="beeOverText">Держи баланс стрелками. Пробел — прыжок через осу. Лови чемоданы с деньгами.</p>
         <button class="btn primary" id="beeOverBtn">Поехали</button>
       </div>
     </div>
     <div class="bee-ctrls">
       <button data-bee="left" aria-label="влево">◀</button>
+      <button data-bee="jump" class="wide" aria-label="прыжок">ПРОБЕЛ</button>
       <button data-bee="right" aria-label="вправо">▶</button>
     </div>
   </div>
@@ -952,11 +954,62 @@ $('#vpStart').addEventListener('click', vpStart);
 
 const BEE = {
   running: false, raf: null, last: 0, t: 0, angle: 0, angVel: 0,
-  keys: { left: false, right: false }, result: 0, gustT: 0, gust: 0
+  keys: { left: false, right: false }, result: 0, gustT: 0, gust: 0,
+  jumpY: 0, jumpV: 0, onGround: true,
+  wasps: [], cases: [], pops: [],
+  hearts: 3, money: 0, invuln: 0, shake: 0, hurtFlash: 0,
+  spawnW: 2.4, spawnC: 1.6
 };
+const JUMP_V = 760, GRAV = 2100, BEE_SC = 0.82;
 const beeCanvas = $('#beeCanvas');
 const beeCtx = beeCanvas.getContext('2d');
 let beeW = 600, beeH = 380, beeStars = [];
+
+function beeHUD() {
+  $('#beeLives').textContent = '♥'.repeat(Math.max(0, BEE.hearts)) + '♡'.repeat(Math.max(0, 3 - BEE.hearts));
+  $('#beeLives').style.color = BEE.hearts <= 1 ? '#ff4d5e' : '#ff6b9d';
+  $('#beeMoney').textContent = BEE.money + ' ₽';
+}
+
+function beeJump() {
+  if (!BEE.running || !BEE.onGround) return;
+  BEE.jumpV = JUMP_V;
+  BEE.onGround = false;
+  blip(560, .05, 'sine');
+}
+
+function riderAt(angle) {
+  const inp = (BEE.keys.right ? 1 : 0) - (BEE.keys.left ? 1 : 0);
+  const lx = inp * 10, ly = -102 - BEE.jumpY;
+  const c = Math.cos(angle), s = Math.sin(angle);
+  return { x: beeW / 2 + (c * lx - s * ly) * BEE_SC, y: (beeH - 105) + (s * lx + c * ly) * BEE_SC };
+}
+
+function spawnWasp() {
+  const fromLeft = Math.random() < 0.5;
+  const r = riderAt(BEE.angle);
+  const baseY = Math.max(70, Math.min(beeH - 60, r.y + (Math.random() * 36 - 18)));
+  BEE.wasps.push({
+    x: fromLeft ? -45 : beeW + 45,
+    y: baseY, baseY,
+    vx: (fromLeft ? 1 : -1) * (215 + Math.random() * 150 + BEE.t * 9),
+    ph: Math.random() * 6.28, hit: false
+  });
+}
+
+function spawnCase() {
+  const fromLeft = Math.random() < 0.5;
+  const high = Math.random() < 0.55;
+  const cy = beeH - 105;
+  BEE.cases.push({
+    x: fromLeft ? -55 : beeW + 55,
+    y: high ? cy - 190 : cy - 100,
+    vx: (fromLeft ? 1 : -1) * (145 + Math.random() * 95),
+    rot: Math.random() * 6, vr: (Math.random() - 0.5) * 3,
+    value: high ? 40 + Math.round(Math.random() * 45) : 15 + Math.round(Math.random() * 20),
+    got: false
+  });
+}
 
 function resizeBee() {
   const rect = beeCanvas.getBoundingClientRect();
@@ -982,6 +1035,11 @@ function beeStart() {
   BEE.running = true;
   BEE.t = 0; BEE.angle = 0; BEE.angVel = 0.15; BEE.result = 0;
   BEE.gustT = 5; BEE.gust = 0;
+  BEE.jumpY = 0; BEE.jumpV = 0; BEE.onGround = true;
+  BEE.wasps = []; BEE.cases = []; BEE.pops = [];
+  BEE.hearts = 3; BEE.money = 0; BEE.invuln = 0; BEE.shake = 0; BEE.hurtFlash = 0;
+  BEE.spawnW = 2.2; BEE.spawnC = 1.4;
+  beeHUD();
   $('#beeOverlay').classList.add('hidden');
   $('#beeStatus').textContent = 'цель: 30 сек';
   BEE.last = performance.now();
@@ -1001,34 +1059,100 @@ function beeLoop(ts) {
   if (BEE.gustT <= 0) { BEE.gustT = 3.4 + Math.random() * 2.4; BEE.gust = (Math.random() < 0.5 ? -1 : 1) * (0.9 + BEE.t * 0.02); }
   BEE.gust *= 0.985;
 
+  if (!BEE.onGround) {
+    BEE.jumpV -= GRAV * dt;
+    BEE.jumpY += BEE.jumpV * dt;
+    if (BEE.jumpY <= 0) { BEE.jumpY = 0; BEE.jumpV = 0; BEE.onGround = true; }
+  }
+
   const drift = noise * (0.85 + BEE.t * 0.05) + BEE.gust;
   const acc = inp * 6.4 + BEE.angle * 2.35 + drift - BEE.angVel * 1.15;
   BEE.angVel += acc * dt;
   BEE.angle += BEE.angVel * dt;
 
-  if (Math.abs(BEE.angle) > 1.06) { beeFall(); return; }
+  if (Math.abs(BEE.angle) > 1.06) { beeFall('Не удержал баланс'); return; }
   if (BEE.t >= 30) { beeWin(); return; }
 
+  BEE.invuln = Math.max(0, BEE.invuln - dt);
+  BEE.shake *= 0.86;
+  BEE.hurtFlash = Math.max(0, BEE.hurtFlash - dt * 2.2);
+
+  BEE.spawnW -= dt;
+  if (BEE.spawnW <= 0) { spawnWasp(); BEE.spawnW = Math.max(0.8, 1.9 - BEE.t * 0.035) + Math.random() * 0.6; }
+  BEE.spawnC -= dt;
+  if (BEE.spawnC <= 0) { spawnCase(); BEE.spawnC = Math.max(0.75, 1.7 - BEE.t * 0.02) + Math.random() * 0.8; }
+
+  for (const w of BEE.wasps) {
+    w.x += w.vx * dt;
+    w.y = w.baseY + Math.sin(BEE.t * 6 + w.ph) * 9;
+  }
+  BEE.wasps = BEE.wasps.filter(w => w.x > -90 && w.x < beeW + 90);
+
+  for (const c of BEE.cases) {
+    c.x += c.vx * dt;
+    c.rot += c.vr * dt;
+    c.y += Math.sin(BEE.t * 2.6 + c.rot) * 14 * dt;
+  }
+  BEE.cases = BEE.cases.filter(c => c.x > -100 && c.x < beeW + 100);
+
+  for (const p of BEE.pops) p.life -= dt * 1.1;
+  BEE.pops = BEE.pops.filter(p => p.life > 0);
+
+  const rp = riderAt(BEE.angle);
+
+  for (const w of BEE.wasps) {
+    if (w.hit) continue;
+    const dx = w.x - rp.x, dy = w.y - rp.y;
+    if (dx * dx + dy * dy < 34 * 34) {
+      w.hit = true;
+      if (BEE.invuln <= 0) {
+        BEE.hearts--;
+        BEE.invuln = 1.3;
+        BEE.shake = 15;
+        BEE.hurtFlash = 1;
+        BEE.angVel += (Math.random() < 0.5 ? -1 : 1) * (3.1 + Math.random() * 1.7);
+        beeHUD();
+        blip(150, .18, 'sawtooth');
+        if (BEE.hearts <= 0) { beeFall('Тебя зажалили осы'); return; }
+      }
+    }
+  }
+
+  for (const c of BEE.cases) {
+    if (c.got) continue;
+    const dx = c.x - rp.x, dy = c.y - rp.y;
+    if (dx * dx + dy * dy < 48 * 48) {
+      c.got = true;
+      BEE.money += c.value;
+      BEE.pops.push({ x: c.x, y: c.y, txt: '+' + c.value + '₽', life: 1 });
+      beeHUD();
+      blip(900, .05, 'sine');
+    }
+  }
+  BEE.cases = BEE.cases.filter(c => !c.got);
+
   $('#beeTime').textContent = BEE.t.toFixed(1);
-  $('#beeStatus').textContent = Math.abs(BEE.angle) > 0.7 ? 'ДЕРЖИСЬ!' : 'цель: 30 сек';
+  $('#beeStatus').textContent = BEE.invuln > 0 ? 'ОСА!' : Math.abs(BEE.angle) > 0.7 ? 'ДЕРЖИСЬ!' : 'цель: 30 сек';
   drawBeeScene(BEE.angle, inp);
   BEE.raf = requestAnimationFrame(beeLoop);
 }
 
-function beeFall() {
+function beeFall(reason) {
   BEE.running = false;
   if (BEE.raf) cancelAnimationFrame(BEE.raf);
   BEE.raf = null;
   BEE.result = BEE.t;
   state.best.bee = Math.max(state.best.bee, BEE.t);
   save();
-  const reward = Math.round(BEE.t * 9);
+  const reward = Math.round(BEE.t * 9) + BEE.money;
   addCoins(reward);
   $('#beeTime').textContent = BEE.t.toFixed(1);
   $('#beeBest').textContent = state.best.bee.toFixed(1);
-  showBeeOverlay('Ты упал', 'Продержался ' + BEE.t.toFixed(1) + ' сек из 30. +' + reward + ' ₽', 'Ещё раз');
+  showBeeOverlay(reason || 'Ты упал',
+    BEE.t.toFixed(1) + ' сек из 30 · чемоданов на ' + BEE.money + ' ₽ · всего +' + reward + ' ₽', 'Ещё раз');
   blip(200, .18, 'sawtooth');
   drawBeeScene(BEE.angle, 0);
+  BEE.wasps = []; BEE.cases = [];
 }
 
 function beeWin() {
@@ -1038,12 +1162,14 @@ function beeWin() {
   BEE.result = 30;
   state.best.bee = Math.max(state.best.bee, 30);
   save();
-  const reward = 400;
+  const reward = 400 + BEE.money;
   addCoins(reward);
   $('#beeTime').textContent = '30.0';
   $('#beeBest').textContent = state.best.bee.toFixed(1);
-  showBeeOverlay('Ты удержался!', '30 секунд на Пояше. Награда: ' + reward + ' ₽', 'Снова');
+  showBeeOverlay('Ты удержался!', '30 секунд на Пояше, чемоданов на ' + BEE.money + ' ₽. Награда: ' + reward + ' ₽', 'Снова');
   blip(700, .1); setTimeout(() => blip(950, .12), 100); setTimeout(() => blip(1250, .18), 210);
+  drawBeeScene(BEE.angle, 0);
+  BEE.wasps = []; BEE.cases = [];
 }
 
 function showBeeOverlay(title, text, btn) {
@@ -1081,15 +1207,35 @@ function drawBeeScene(angle, inp) {
   }
   ctx.globalAlpha = 1;
 
-  const cx = W / 2, cy = H / 2 + 26;
+  const cx = W / 2, cy = H - 105;
+  const sh = BEE.shake || 0;
   ctx.save();
-  ctx.translate(cx, cy);
+  ctx.translate(cx + (Math.random() - 0.5) * sh, cy + (Math.random() - 0.5) * sh);
   ctx.rotate(angle);
+  ctx.scale(BEE_SC, BEE_SC);
 
   drawBeeBody(ctx, BEE.t);
-  drawRider(ctx, inp, BEE.t);
+  drawRider(ctx, inp, BEE.t, BEE.jumpY || 0);
 
   ctx.restore();
+
+  for (const w of BEE.wasps) drawWasp(ctx, w);
+  for (const c of BEE.cases) drawCase(ctx, c);
+
+  for (const p of BEE.pops) {
+    ctx.globalAlpha = Math.max(0, p.life);
+    ctx.fillStyle = '#b8ff3a';
+    ctx.font = '900 15px "Segoe UI", system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(p.txt, p.x, p.y - (1 - p.life) * 42);
+  }
+  ctx.globalAlpha = 1;
+  ctx.textAlign = 'left';
+
+  if (BEE.hurtFlash > 0) {
+    ctx.fillStyle = 'rgba(255,77,94,' + (BEE.hurtFlash * 0.22).toFixed(3) + ')';
+    ctx.fillRect(0, 0, W, H);
+  }
 
   if (Math.abs(angle) > 0.62) {
     const danger = Math.min(1, (Math.abs(angle) - 0.62) / 0.44);
@@ -1201,10 +1347,109 @@ function drawBeeBody(ctx, t) {
   ctx.stroke();
 }
 
-function drawRider(ctx, inp, t) {
-  const lean = (inp || 0) * 10 + Math.sin(t * 9) * 1.5;
+function drawWasp(ctx, w) {
+  const dir = w.vx >= 0 ? 1 : -1;
   ctx.save();
-  ctx.translate(lean, -97);
+  ctx.translate(w.x, w.y);
+  ctx.scale(dir, 1);
+
+  ctx.strokeStyle = 'rgba(255,77,94,.25)';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(-20, 0);
+  ctx.lineTo(-56, 0);
+  ctx.stroke();
+
+  const flap = Math.sin(BEE.t * 30 + w.ph) * 0.4;
+  ctx.fillStyle = 'rgba(255,255,255,.5)';
+  ctx.beginPath(); ctx.ellipse(-2, -14, 15, 6, -0.4 + flap, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(6, -14, 14, 6, 0.2 + flap, 0, Math.PI * 2); ctx.fill();
+
+  ctx.beginPath();
+  ctx.ellipse(0, 0, 18, 13, 0, 0, Math.PI * 2);
+  ctx.fillStyle = '#ffcf33';
+  ctx.fill();
+
+  ctx.save();
+  ctx.clip();
+  ctx.fillStyle = '#1a1408';
+  ctx.fillRect(-5, -14, 6, 28);
+  ctx.fillRect(7, -14, 5, 28);
+  ctx.restore();
+
+  ctx.beginPath();
+  ctx.ellipse(0, 0, 18, 13, 0, 0, Math.PI * 2);
+  ctx.strokeStyle = '#1a1408';
+  ctx.lineWidth = 3;
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(-17, 0); ctx.lineTo(-29, -3); ctx.lineTo(-29, 3);
+  ctx.closePath();
+  ctx.fillStyle = '#1a1408';
+  ctx.fill();
+
+  ctx.beginPath(); ctx.arc(11, -4, 4.2, 0, Math.PI * 2);
+  ctx.fillStyle = '#fff'; ctx.fill();
+  ctx.beginPath(); ctx.arc(12, -4, 2.1, 0, Math.PI * 2);
+  ctx.fillStyle = '#1a1408'; ctx.fill();
+
+  ctx.strokeStyle = '#1a1408';
+  ctx.lineWidth = 2.4;
+  ctx.beginPath(); ctx.moveTo(6, -12); ctx.lineTo(15, -9); ctx.stroke();
+
+  ctx.restore();
+}
+
+function drawCase(ctx, c) {
+  ctx.save();
+  ctx.translate(c.x, c.y);
+  ctx.rotate(Math.sin(c.rot) * 0.26);
+
+  ctx.shadowColor = 'rgba(184,255,58,.7)';
+  ctx.shadowBlur = 18;
+  ctx.fillStyle = '#c98a3c';
+  roundRect(ctx, -22, -15, 44, 30, 6);
+  ctx.fill();
+  ctx.shadowBlur = 0;
+
+  ctx.strokeStyle = '#4a2e10';
+  ctx.lineWidth = 3;
+  ctx.stroke();
+
+  ctx.fillStyle = '#e8b25c';
+  roundRect(ctx, -22, -15, 44, 9, 4);
+  ctx.fill();
+
+  ctx.fillStyle = '#ffcc33';
+  ctx.fillRect(-4, -4, 8, 8);
+  ctx.strokeStyle = '#4a2e10';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(-4, -4, 8, 8);
+
+  ctx.strokeStyle = '#4a2e10';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(-8, -15); ctx.lineTo(-8, -21); ctx.lineTo(8, -21); ctx.lineTo(8, -15);
+  ctx.stroke();
+
+  ctx.fillStyle = '#2a1a08';
+  ctx.font = '900 13px "Segoe UI", system-ui, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('₽', 0, 3);
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'alphabetic';
+
+  ctx.restore();
+}
+
+function drawRider(ctx, inp, t, jumpY) {
+  const lean = (inp || 0) * 10 + Math.sin(t * 9) * 1.5;
+  const air = jumpY > 2;
+  ctx.save();
+  ctx.translate(lean, -97 - (jumpY || 0));
+  ctx.rotate(air ? (inp || 0) * 0.18 : 0);
   ctx.scale(1.06, 1.06);
 
   ctx.beginPath();
@@ -1249,6 +1494,10 @@ function drawRider(ctx, inp, t) {
 }
 
 window.addEventListener('keydown', e => {
+  if (e.code === 'Space' || e.key === ' ') {
+    if (BEE.running) { e.preventDefault(); beeJump(); }
+    return;
+  }
   if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A' || e.key === 'ф' || e.key === 'Ф') {
     BEE.keys.left = true;
     if (BEE.running) e.preventDefault();
@@ -1265,12 +1514,21 @@ window.addEventListener('keyup', e => {
 
 $$('[data-bee]').forEach(btn => {
   const dir = btn.dataset.bee;
+  if (dir === 'jump') {
+    btn.addEventListener('pointerdown', ev => { ev.preventDefault(); beeJump(); });
+    return;
+  }
   const on = ev => { ev.preventDefault(); BEE.keys[dir] = true; };
   const off = ev => { ev.preventDefault(); BEE.keys[dir] = false; };
   btn.addEventListener('pointerdown', on);
   btn.addEventListener('pointerup', off);
   btn.addEventListener('pointerleave', off);
   btn.addEventListener('pointercancel', off);
+});
+
+beeCanvas.addEventListener('pointerdown', ev => {
+  ev.preventDefault();
+  beeJump();
 });
 
 $('#beeStart').addEventListener('click', beeStart);
@@ -1301,6 +1559,7 @@ vpReset();
 vpRenderFlavors();
 vpRenderStats();
 $('#beeBest').textContent = state.best.bee.toFixed(1);
+beeHUD();
 renderBeeIdle();
 requestAnimationFrame(resizeBee);
 
