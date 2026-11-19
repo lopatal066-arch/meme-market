@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>МЕМ-МАРКЕТ — Пояш, Пояша и три игры</title>
+<meta name="description" content="Магазин мемов с Пояшем и Пояшей: мем-маркет, вейп-шоп и игра «удержись на шмеле».">
+<meta name="theme-color" content="#08070f">
+<style>
+:root{
+  --bg:#08070f;
+  --panel:#12101f;
+  --panel2:#171428;
+  --line:#262040;
+  --txt:#ece9ff;
+  --dim:#8d87ad;
+  --lime:#b8ff3a;
+  --violet:#8b5cff;
+  --pink:#ff4d9d;
+  --cyan:#35e6ff;
+  --gold:#ffcc33;
+  --red:#ff4d5e;
+  --r:16px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  font-family:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  color:var(--txt);
+  min-height:100vh;
+  background:
+    radial-gradient(1100px 600px at 12% -12%, rgba(139,92,255,.28), transparent 62%),
+    radial-gradient(900px 520px at 92% -4%, rgba(53,230,255,.14), transparent 58%),
+    radial-gradient(760px 520px at 50% 112%, rgba(184,255,58,.09), transparent 62%),
+    var(--bg);
+  background-attachment:fixed;
+  -webkit-font-smoothing:antialiased;
+}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+h1,h2,h3,p{margin:0}
+.wrap{max-width:1180px;margin:0 auto;padding:0 18px}
+
+.topbar{position:sticky;top:0;z-index:60;backdrop-filter:blur(16px);background:rgba(8,7,15,.78);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1180px;margin:0 auto;padding:11px 18px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.logo{font-weight:900;letter-spacing:.16em;font-size:14px;text-transform:uppercase;white-space:nowrap}
+.logo em{font-style:normal;color:var(--lime)}
+.nav{display:flex;gap:6px;flex-wrap:wrap}
+.navbtn{
+  padding:8px 13px;border-radius:999px;font-size:13px;font-weight:700;
+  color:var(--dim);border:1px solid transparent;transition:.15s;white-space:nowrap
+}
+.navbtn:hover{color:var(--txt);background:rgba(255,255,255,.05)}
+.navbtn.active{color:#0b0a12;background:var(--lime);border-color:var(--lime)}
+.wallet{
+  margin-left:auto;display:flex;align-items:center;gap:8px;
+  border:1px solid var(--line);background:linear-gradient(180deg,#181530,#100e1c);
+  padding:7px 15px;border-radius:999px;font-weight:800;font-size:14px;white-space:nowrap
+}
+.wallet span{color:var(--gold)}
+.wallet small{color:var(--dim);font-weight:700;font-size:11px;letter-spacing:.08em}
+
+.view{display:none;padding:26px 0 70px}
+.view.active{display:block;animation:fade .22s ease}
+@keyframes fade{from{transform:translateY(8px)}to{transform:none}}
+
+.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:18px;align-items:stretch;margin-bottom:24px}
+.hero-card{
+  position:relative;overflow:hidden;border:1px solid var(--line);border-radius:24px;padding:28px;
+  background:linear-gradient(150deg,rgba(139,92,255,.16),rgba(18,16,31,.9) 55%)
+}
+.hero-card:after{
+  content:"";position:absolute;inset:-40% -10% auto auto;width:340px;height:340px;border-radius:50%;
+  background:radial-gradient(circle,rgba(184,255,58,.22),transparent 65%);filter:blur(6px);pointer-events:none
+}
+.eyebrow{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--lime);font-weight:800;margin-bottom:12px}
+.hero h1{font-size:clamp(28px,4.4vw,46px);line-height:1.04;letter-spacing:-.02em;font-weight:900}
+.hero h1 em{font-style:normal;background:linear-gradient(92deg,var(--lime),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{margin-top:14px;color:var(--dim);font-size:15px;line-height:1.6;max-width:46ch}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:12px;
+  font-weight:800;font-size:14px;border:1px solid var(--line);background:#181530;transition:.15s
+}
+.btn:hover{transform:translateY(-1px);border-color:#3b3266}
+.btn:active{transform:none}
+.btn.primary{background:var(--lime);color:#0b0a12;border-color:var(--lime);box-shadow:0 8px 26px -12px var(--lime)}
+.btn.primary:hover{filter:brightness(1.06)}
+.btn.ghost{background:transparent}
+.btn:disabled{opacity:.42;cursor:not-allowed;transform:none}
+
+.bees{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.bee-card{
+  position:relative;border:1px solid var(--line);border-radius:22px;padding:16px 14px 18px;
+  background:linear-gradient(180deg,#171428,#0f0d1b);text-align:center;overflow:hidden;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px
+}
+.bee-card:before{
+  content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 20%,rgba(255,210,31,.16),transparent 62%)
+}
+.bee-card.girl:before{background:radial-gradient(circle at 50% 20%,rgba(255,77,157,.18),transparent 62%)}
+.bee-card svg{width:min(150px,46vw);height:auto;display:block;margin:0 auto;position:relative;animation:hover 3.6s ease-in-out infinite}
+.bee-card.girl svg{animation-delay:-1.8s}
+@keyframes hover{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-9px) rotate(2deg)}}
+.bee-name{font-weight:900;font-size:16px;margin-top:6px;position:relative}
+.bee-sub{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-top:4px;font-weight:700;position:relative}
+
+.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin:6px 0 16px;flex-wrap:wrap}
+.section-head h2{font-size:22px;font-weight:900;letter-spacing:-.01em}
+.section-head .hint{color:var(--dim);font-size:13px}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.card{
+  position:relative;border:1px solid var(--line);border-radius:var(--r);padding:14px;
+  background:linear-gradient(180deg,#151227,#0e0c1a);display:flex;flex-direction:column;gap:10px;
+  transition:.16s;overflow:hidden
+}
+.card:hover{transform:translateY(-3px);border-color:#3d3468;box-shadow:0 18px 40px -28px #000}
+.card .art{
+  height:110px;border-radius:12px;display:grid;place-items:center;
+  background:radial-gradient(circle at 50% 40%,rgba(255,255,255,.06),transparent 70%),#0c0a16
+}
+.card .art svg{width:104px;height:auto}
+.bigemoji{font-size:48px;line-height:1;filter:drop-shadow(0 6px 12px rgba(0,0,0,.5))}
+.card h3{font-size:15px;font-weight:800;line-height:1.25}
+.card .desc{font-size:12px;color:var(--dim);line-height:1.45;flex:1}
+.rarity{position:absolute;top:10px;left:10px;font-size:9px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;padding:4px 8px;border-radius:999px}
+.card.legend .rarity{background:rgba(255,204,51,.16);color:var(--gold)}
+.card.epic .rarity{background:rgba(139,92,255,.18);color:#b79bff}
+.card.rare .rarity{background:rgba(53,230,255,.16);color:var(--cyan)}
+.card.common .rarity{background:rgba(255,255,255,.07);color:var(--dim)}
+.card.legend{border-color:rgba(255,204,51,.32)}
+.card.epic{border-color:rgba(139,92,255,.3)}
+.price{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.price b{font-size:15px;color:var(--gold)}
+.card .btn{padding:9px 12px;border-radius:10px;font-size:12.5px;justify-content:center;flex:1}
+.card.owned{border-color:rgba(184,255,58,.4)}
+.card.owned:after{
+  content:"В КОЛЛЕКЦИИ";position:absolute;right:10px;top:10px;font-size:9px;font-weight:900;
+  letter-spacing:.1em;color:var(--lime);background:rgba(184,255,58,.14);padding:4px 7px;border-radius:999px
+}
+
+.panel{border:1px solid var(--line);border-radius:20px;background:linear-gradient(180deg,#141127,#0d0b18);padding:18px}
+.panel + .panel{margin-top:14px}
+
+.arena{
+  position:relative;height:430px;border-radius:16px;overflow:hidden;margin-top:14px;
+  background:
+    radial-gradient(circle at 50% 120%,rgba(139,92,255,.16),transparent 60%),
+    repeating-linear-gradient(90deg,rgba(255,255,255,.028) 0 1px,transparent 1px 46px),
+    repeating-linear-gradient(0deg,rgba(255,255,255,.028) 0 1px,transparent 1px 46px),
+    #0b0915;
+  border:1px solid var(--line);user-select:none
+}
+.arena .empty{position:absolute;inset:0;display:grid;place-content:center;text-align:center;color:var(--dim);font-size:14px;line-height:1.7;padding:20px}
+.cust{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;cursor:pointer;will-change:transform}
+.cust .face{font-size:30px;line-height:1;filter:drop-shadow(0 4px 6px rgba(0,0,0,.55));transition:transform .1s}
+.cust:hover .face{transform:scale(1.18)}
+.cust .bar{width:46px;height:5px;border-radius:99px;background:#2c2547;overflow:hidden;margin-top:6px}
+.cust .bar i{display:block;height:100%;width:100%;background:var(--lime);border-radius:99px;transition:background .2s}
+.cust .tag{font-size:10px;font-weight:900;color:var(--gold);margin-top:3px;text-shadow:0 1px 3px #000}
+
+.stats{display:flex;gap:8px;flex-wrap:wrap}
+.stat{border:1px solid var(--line);border-radius:12px;padding:8px 13px;background:#0f0d1c;min-width:88px}
+.stat span{display:block;font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--dim);font-weight:800}
+.stat b{font-size:17px;font-variant-numeric:tabular-nums}
+.gamehead{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.gamehead h2{font-size:20px;font-weight:900;margin-right:auto}
+
+.upg{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin-top:14px}
+.upg button{
+  text-align:left;border:1px solid var(--line);border-radius:14px;padding:11px 13px;background:#100e1d;transition:.15s
+}
+.upg button:hover:not(:disabled){border-color:#3d3468;transform:translateY(-2px)}
+.upg button:disabled{opacity:.4;cursor:not-allowed}
+.upg b{display:block;font-size:13.5px;margin-bottom:3px}
+.upg small{color:var(--dim);font-size:11.5px;display:block;line-height:1.4}
+.upg .lvl{color:var(--lime);font-weight:900}
+
+.vape-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.custbox{
+  border:1px solid var(--line);border-radius:16px;padding:18px;background:#0d0b18;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:230px;text-align:center
+}
+.custbox .who{font-size:44px;line-height:1}
+.custbox .want{font-size:17px;font-weight:900;margin-top:12px}
+.custbox .want em{font-style:normal;color:var(--cyan)}
+.custbox .offer{color:var(--gold);font-weight:800;margin-top:6px;font-size:14px}
+.custbox .patience{width:100%;max-width:260px;height:8px;border-radius:99px;background:#2c2547;margin-top:16px;overflow:hidden}
+.custbox .patience i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--red),var(--gold),var(--lime));background-size:260px 100%;background-position:right}
+.flavors{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-content:start}
+.flavor{
+  border:1px solid var(--line);border-radius:14px;padding:12px;background:#100e1d;text-align:left;transition:.13s;position:relative
+}
+.flavor:hover:not(:disabled){border-color:var(--cyan);transform:translateY(-2px);box-shadow:0 10px 26px -18px var(--cyan)}
+.flavor:disabled{opacity:.3;cursor:not-allowed}
+.flavor .fl-emoji{font-size:22px}
+.flavor b{display:block;font-size:13px;margin:4px 0 2px}
+.flavor small{color:var(--dim);font-size:11px;font-weight:700}
+.flavor .qty{position:absolute;top:8px;right:10px;font-size:11px;font-weight:900;color:var(--lime)}
+
+.bee-stage{position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:#07060d}
+#beeCanvas{display:block;width:100%;height:380px;touch-action:none}
+.bee-hud{position:absolute;inset:12px 12px auto 12px;display:flex;justify-content:space-between;gap:10px;pointer-events:none;flex-wrap:wrap}
+.pill{border:1px solid rgba(255,255,255,.14);background:rgba(8,7,15,.65);backdrop-filter:blur(8px);border-radius:999px;padding:6px 13px;font-size:12px;font-weight:800;font-variant-numeric:tabular-nums}
+.bee-ctrls{display:flex;gap:10px;margin-top:12px;justify-content:center}
+.bee-ctrls button{
+  width:84px;height:52px;border-radius:14px;border:1px solid var(--line);background:#16132a;font-size:20px;font-weight:900;transition:.1s
+}
+.bee-ctrls button:active{background:var(--lime);color:#0b0a12}
+.overlay{
+  position:absolute;inset:0;display:grid;place-content:center;text-align:center;padding:24px;
+  background:rgba(6,5,12,.82);backdrop-filter:blur(6px);z-index:5
+}
+.overlay h3{font-size:26px;font-weight:900;margin-bottom:8px}
+.overlay p{color:var(--dim);font-size:14px;line-height:1.6;margin-bottom:18px;max-width:38ch}
+.hidden{display:none!important}
+
+.toast-wrap{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:200;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
+.toast{
+  background:#1b1730;border:1px solid var(--line);border-radius:12px;padding:10px 18px;font-size:13px;font-weight:700;
+  box-shadow:0 16px 40px -20px #000;animation:tin .22s ease
+}
+.toast.good{border-color:rgba(184,255,58,.5);color:var(--lime)}
+.toast.bad{border-color:rgba(255,77,94,.5);color:#ff8b96}
+@keyframes tin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.float{position:absolute;font-weight:900;font-size:16px;color:var(--lime);pointer-events:none;animation:fl .8s ease-out forwards;text-shadow:0 2px 8px #000}
+@keyframes fl{to{transform:translateY(-46px);opacity:0}}
+
+.footer{border-top:1px solid var(--line);padding:24px 0 40px;color:var(--dim);font-size:12.5px;line-height:1.7}
+.footer b{color:var(--txt)}
+.collection{margin-top:18px;font-size:13px;color:var(--dim)}
+.collection b{color:var(--lime)}
+
+@media (max-width:860px){
+  .hero{grid-template-columns:1fr}
+  .vape-grid{grid-template-columns:1fr}
+  .flavors{grid-template-columns:1fr 1fr}
+  .wallet{margin-left:0}
+  .nav{order:3;width:100%}
+  .arena{height:380px}
+}
+@media (max-width:520px){
+  .bees{grid-template-columns:1fr 1fr}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+  .flavors{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="logo">МЕМ<em>-</em>МАРКЕТ</div>
+    <nav class="nav" id="nav">
+      <button class="navbtn active" data-view="home">Главная</button>
+      <button class="navbtn" data-view="shop">Магазин</button>
+      <button class="navbtn" data-view="memes">Мем-маркет</button>
+      <button class="navbtn" data-view="vape">Вейп-шоп</button>
+      <button class="navbtn" data-view="bee">Удержись на шмеле</button>
+    </nav>
+    <div class="wallet"><span id="coins">0</span><small>₽</small></div>
+  </div>
+</header>
+
+<main class="wrap">
+
+<section class="view active" id="view-home">
+  <div class="hero">
+    <div class="hero-card">
+      <div class="eyebrow">мемы · шмели · вейпы</div>
+      <h1>Пояш разоряет<br><em>твой кошелёк</em></h1>
+      <p>Три игры, один магазин и два шмеля-разорителя. Зарабатывай ₽ в играх, скупай мемы, коллекционируй шмелей.</p>
+      <div class="hero-actions">
+        <button class="btn primary" data-go="shop">В магазин</button>
+        <button class="btn ghost" data-go="memes">Заработать ₽</button>
+      </div>
+    </div>
+    <div class="bees">
+      <div class="bee-card" id="heroBeeBoy">
+        <div class="bee-name">Пояш</div>
+        <div class="bee-sub">шмель-разоритель</div>
+      </div>
+      <div class="bee-card girl" id="heroBeeGirl">
+        <div class="bee-name">Пояша</div>
+        <div class="bee-sub">разорительница</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="section-head">
+      <h2>Три игры</h2>
+      <div class="hint">сложность растёт слева направо</div>
+    </div>
+    <div class="grid">
+      <article class="card epic">
+        <span class="rarity">средне</span>
+        <div class="art"><span class="bigemoji">🛒</span></div>
+        <h3>Мем-маркет</h3>
+        <p class="desc">Обслуживай покупателей мемов, пока не лопнуло терпение. Апгрейды и стажёр.</p>
+        <div class="price"><button class="btn primary" data-go="memes">Играть</button></div>
+      </article>
+      <article class="card legend">
+        <span class="rarity">сложно</span>
+        <div class="art"><span class="bigemoji">💨</span></div>
+        <h3>Вейп-шоп</h3>
+        <p class="desc">Распродай весь товар до таймера. Не тот вкус — товар испорчен.</p>
+        <div class="price"><button class="btn primary" data-go="vape">Играть</button></div>
+      </article>
+      <article class="card legend">
+        <span class="rarity">очень сложно</span>
+        <div class="art"><span class="bigemoji">🐝</span></div>
+        <h3>Удержись на шмеле</h3>
+        <p class="desc">30 секунд на спине у Пояша. Он не хочет, чтобы ты удержался.</p>
+        <div class="price"><button class="btn primary" data-go="bee">Играть</button></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="view" id="view-shop">
+  <div class="section-head">
+    <h2>Магазин мемов</h2>
+    <div class="hint">валюта: ₽ — зарабатывается в играх</div>
+  </div>
+  <div class="grid" id="shopGrid"></div>
+  <div class="collection" id="collection"></div>
+</section>
+
+<section class="view" id="view-memes">
+  <div class="panel">
+    <div class="gamehead">
+      <h2>Мем-маркет · смена</h2>
+      <div class="stats">
+        <div class="stat"><span>Продано</span><b id="mmServed">0</b></div>
+        <div class="stat"><span>Ушли</span><b id="mmLost">0</b></div>
+        <div class="stat"><span>Крупнейший чек</span><b id="mmBest">0</b></div>
+      </div>
+      <button class="btn primary" id="mmStart">Начать смену</button>
+    </div>
+    <div class="arena" id="mmArena">
+      <div class="empty" id="mmEmpty">
+        Нажми «Начать смену»<br>
+        Кликай по покупателю, пока полоска терпения не кончилась
+      </div>
+    </div>
+    <div class="upg" id="mmUpgrades"></div>
+  </div>
+</section>
+
+<section class="view" id="view-vape">
+  <div class="panel">
+    <div class="gamehead">
+      <h2>Вейп-шоп · распродажа</h2>
+      <div class="stats">
+        <div class="stat"><span>Товара</span><b id="vpLeft">40</b></div>
+        <div class="stat"><span>Выручка</span><b id="vpMoney">0</b></div>
+        <div class="stat"><span>Комбо</span><b id="vpCombo">x1</b></div>
+        <div class="stat"><span>Время</span><b id="vpTime">75</b></div>
+      </div>
+      <button class="btn primary" id="vpStart">Открыть лавку</button>
+    </div>
+    <div class="vape-grid" style="margin-top:14px">
+      <div class="custbox" id="vpCustBox">
+        <div class="who">😴</div>
+        <div class="want" id="vpWant">лавка закрыта</div>
+        <div class="offer" id="vpOffer">—</div>
+        <div class="patience"><i id="vpPatience" style="width:0%"></i></div>
+      </div>
+      <div class="flavors" id="vpFlavors"></div>
+    </div>
+    <div class="hint" style="margin-top:12px;color:var(--dim);font-size:12.5px">
+      Правило одно: клик по вкусу = продажа. Не тот вкус — товар выброшен, комбо сгорает.
+    </div>
+  </div>
+</section>
+
+<section class="view" id="view-bee">
+  <div class="panel">
+    <div class="gamehead">
+      <h2>Удержись на шмеле</h2>
+      <div class="stats">
+        <div class="stat"><span>Время</span><b id="beeTime">0.0</b></div>
+        <div class="stat"><span>Рекорд</span><b id="beeBest">0.0</b></div>
+      </div>
+      <button class="btn primary" id="beeStart">Залезть на шмеля</button>
+    </div>
+    <div class="bee-stage" style="margin-top:14px">
+      <canvas id="beeCanvas"></canvas>
+      <div class="bee-hud">
+        <div class="pill">← → или A / D</div>
+        <div class="pill" id="beeStatus">цель: 30 сек</div>
+      </div>
+      <div class="overlay hidden" id="beeOverlay">
+        <h3 id="beeOverTitle">Готов?</h3>
+        <p id="beeOverText">Держи баланс стрелками. Пояш будет вырываться.</p>
+        <button class="btn primary" id="beeOverBtn">Поехали</button>
+      </div>
+    </div>
+    <div class="bee-ctrls">
+      <button data-bee="left" aria-label="влево">◀</button>
+      <button data-bee="right" aria-label="вправо">▶</button>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div><b>МЕМ-МАРКЕТ</b> — один файл, без сервера. Прогресс хранится в браузере.</div>
+  <div style="margin-top:8px">
+    <button class="btn ghost" id="shareBtn" style="padding:8px 14px;font-size:12.5px">Скинуть другу ссылку</button>
+  </div>
+</footer>
+
+</main>
+
+<div class="toast-wrap" id="toasts"></div>
+
+<script>
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const fmt = n => Math.round(n).toLocaleString('ru-RU');
+
+const SAVE_KEY = 'mememarket.v1';
+const state = { coins: 120, owned: [], best: { memes: 0, vape: 0, bee: 0 } };
+
+try {
+  const raw = localStorage.getItem(SAVE_KEY);
+  if (raw) {
+    const o = JSON.parse(raw);
+    if (typeof o.coins === 'number') state.coins = o.coins;
+    if (Array.isArray(o.owned)) state.owned = o.owned;
+    if (o.best) Object.assign(state.best, o.best);
+  }
+} catch (e) {}
+
+function save() {
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); } catch (e) {}
+}
+
+let audioCtx = null;
+function blip(freq, dur, type) {
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.type = type || 'square';
+    o.frequency.value = freq;
+    g.gain.value = 0.04;
+    o.connect(g); g.connect(audioCtx.destination);
+    const t = audioCtx.currentTime;
+    g.gain.setValueAtTime(0.04, t);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.start(t); o.stop(t + dur);
+  } catch (e) {}
+}
+
+function toast(msg, kind) {
+  const el = document.createElement('div');
+  el.className = 'toast ' + (kind || '');
+  el.textContent = msg;
+  $('#toasts').appendChild(el);
+  setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity .25s'; }, 1500);
+  setTimeout(() => el.remove(), 1800);
+}
+
+function addCoins(n) {
+  state.coins += Math.round(n);
+  save();
+  renderWallet();
+  refreshAffordability();
+}
+
+function renderWallet() {
+  $('#coins').textContent = fmt(state.coins);
+}
+
+let beeUid = 0;
+function beeSVG(variant) {
+  const uid = 'b' + (++beeUid);
+  const girl = variant === 'girl';
+  const body = `
+    <defs>
+      <clipPath id="${uid}"><ellipse cx="110" cy="136" rx="76" ry="58"/></clipPath>
+      <linearGradient id="${uid}w" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#ffffff" stop-opacity=".5"/>
+        <stop offset="1" stop-color="#9fd8ff" stop-opacity=".15"/>
+      </linearGradient>
+      <radialGradient id="${uid}s" cx="0.35" cy="0.28" r="0.85">
+        <stop offset="0" stop-color="#ffe680"/>
+        <stop offset="1" stop-color="#ffc400"/>
+      </radialGradient>
+    </defs>
+    <ellipse cx="50" cy="46" rx="46" ry="21" transform="rotate(-38 50 46)" fill="url(#${uid}w)" stroke="rgba(196,232,255,.8)" stroke-width="3"/>
+    <ellipse cx="170" cy="46" rx="46" ry="21" transform="rotate(38 170 46)" fill="url(#${uid}w)" stroke="rgba(196,232,255,.8)" stroke-width="3"/>
+    <ellipse cx="110" cy="136" rx="76" ry="58" fill="url(#${uid}s)" stroke="#1a1408" stroke-width="6"/>
+    <g clip-path="url(#${uid})">
+      <rect x="24" y="152" width="176" height="15" rx="7.5" fill="#241a08"/>
+      <rect x="24" y="175" width="176" height="14" rx="7" fill="#241a08"/>
+      <rect x="24" y="196" width="176" height="12" rx="6" fill="#241a08"/>
+      <ellipse cx="76" cy="106" rx="30" ry="20" fill="#fff" opacity=".18"/>
+    </g>
+    <ellipse cx="110" cy="136" rx="76" ry="58" fill="none" stroke="#1a1408" stroke-width="6"/>
+    <path d="M88 92 L76 56" stroke="#1a1408" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="74" cy="51" r="7" fill="#1a1408"/>
+    <path d="M132 92 L144 56" stroke="#1a1408" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="146" cy="51" r="7" fill="#1a1408"/>
+  `;
+  const face = girl ? `
+    <circle cx="88" cy="116" r="15" fill="#fff" stroke="#1a1408" stroke-width="3"/>
+    <circle cx="134" cy="116" r="15" fill="#fff" stroke="#1a1408" stroke-width="3"/>
+    <circle cx="90" cy="118" r="7" fill="#1a1408"/>
+    <circle cx="136" cy="118" r="7" fill="#1a1408"/>
+    <circle cx="93" cy="115" r="2.4" fill="#fff"/>
+    <circle cx="139" cy="115" r="2.4" fill="#fff"/>
+    <path d="M78 102 l-6 -8 M72 104 l-9 -4 M128 102 l-6 -8 M134 104 l9 -4" stroke="#1a1408" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+    <circle cx="62" cy="146" r="9" fill="#ff4d9d" opacity=".45"/>
+    <circle cx="158" cy="146" r="9" fill="#ff4d9d" opacity=".45"/>
+    <path d="M94 136 Q110 152 126 136" stroke="#1a1408" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <g transform="translate(110 40) rotate(-8)">
+      <path d="M0 0 C-13 -17 -34 -11 -30 3 C-27 15 -8 14 0 4 Z" fill="#ff4d9d" stroke="#1a1408" stroke-width="3"/>
+      <path d="M0 0 C13 -17 34 -11 30 3 C27 15 8 14 0 4 Z" fill="#ff74b6" stroke="#1a1408" stroke-width="3"/>
+      <circle cx="0" cy="2" r="6" fill="#ff2d86" stroke="#1a1408" stroke-width="2.5"/>
+    </g>
+  ` : `
+    <circle cx="88" cy="116" r="15" fill="#fff" stroke="#1a1408" stroke-width="3"/>
+    <circle cx="134" cy="116" r="15" fill="#fff" stroke="#1a1408" stroke-width="3"/>
+    <circle cx="90" cy="118" r="7" fill="#1a1408"/>
+    <circle cx="136" cy="118" r="7" fill="#1a1408"/>
+    <circle cx="93" cy="115" r="2.4" fill="#fff"/>
+    <circle cx="139" cy="115" r="2.4" fill="#fff"/>
+    <path d="M74 98 L102 106 M146 98 L118 106" stroke="#1a1408" stroke-width="5.5" stroke-linecap="round"/>
+    <path d="M92 141 Q110 130 128 141" stroke="#1a1408" stroke-width="5" fill="none" stroke-linecap="round"/>
+  `;
+  return '<svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">' + body + face + '</svg>';
+}
+
+$('#heroBeeBoy').insertAdjacentHTML('afterbegin', beeSVG('boy'));
+$('#heroBeeGirl').insertAdjacentHTML('afterbegin', beeSVG('girl'));
+
+const SHOP = [
+  { id: 'poyash', name: 'Пояш', sub: '', desc: 'Шмель-разоритель. Разоряет всё, до чего дотянется.', price: 250, rarity: 'legend', art: 'boy' },
+  { id: 'poyasha', name: 'Пояша', sub: '', desc: 'Та же разорительница, но с бантиком. Разоряет ещё быстрее.', price: 320, rarity: 'legend', art: 'girl' },
+  { id: 'sigma', name: 'Сигма-волк', desc: 'Молчит, смотрит в стену, уходит в закат.', price: 90, rarity: 'epic', art: '🐺' },
+  { id: 'skibidi', name: 'Скибиди-туалет', desc: 'Звук, который невозможно развидеть.', price: 70, rarity: 'epic', art: '🚽' },
+  { id: 'dog', name: 'Доге', desc: 'Классика. Держит цену с 2013 года.', price: 55, rarity: 'rare', art: '🐕' },
+  { id: 'cat', name: 'Кот-программист', desc: 'Работает, но только за еду. И только в пятницу.', price: 65, rarity: 'rare', art: '🐈' },
+  { id: 'cringe', name: 'Кринж-детектор', desc: 'Пищит на каждый твой пост.', price: 45, rarity: 'rare', art: '📡' },
+  { id: 'fiasco', name: 'Это фиаско', desc: 'Универсальная реакция на любую ситуацию.', price: 30, rarity: 'common', art: '🫠' },
+  { id: 'vape3k', name: 'Вейп за 3000', desc: 'Продан в вейп-шопе. Дымит как паровоз.', price: 80, rarity: 'common', art: '💨' },
+  { id: 'kvas', name: 'Бутылка кваса', desc: 'Самый честный мем в магазине.', price: 15, rarity: 'common', art: '🍺' }
+];
+
+function renderShop() {
+  $('#shopGrid').innerHTML = SHOP.map(item => {
+    const owned = state.owned.includes(item.id);
+    const art = (item.art === 'boy' || item.art === 'girl') ? beeSVG(item.art) : '<span class="bigemoji">' + item.art + '</span>';
+    return '<article class="card ' + item.rarity + (owned ? ' owned' : '') + '" data-id="' + item.id + '">' +
+      '<span class="rarity">' + (item.rarity === 'legend' ? 'легенда' : item.rarity === 'epic' ? 'эпик' : item.rarity === 'rare' ? 'редкое' : 'обычное') + '</span>' +
+      '<div class="art">' + art + '</div>' +
+      '<h3>' + item.name + '</h3>' +
+      '<p class="desc">' + item.desc + '</p>' +
+      '<div class="price"><b>' + fmt(item.price) + ' ₽</b>' +
+      '<button class="btn primary buy" data-buy="' + item.id + '"' + (owned ? ' disabled' : '') + '>' +
+      (owned ? 'Есть' : 'Купить') + '</button></div>' +
+      '</article>';
+  }).join('');
+  renderCollection();
+  refreshAffordability();
+}
+
+function renderCollection() {
+  const owned = SHOP.filter(i => state.owned.includes(i.id));
+  $('#collection').innerHTML = owned.length
+    ? 'В коллекции: <b>' + owned.map(i => i.name).join(', ') + '</b>'
+    : 'В коллекции пока пусто.';
+}
+
+function refreshAffordability() {
+  $$('#shopGrid .card').forEach(card => {
+    const item = SHOP.find(i => i.id === card.dataset.id);
+    if (!item) return;
+    const btn = $('.buy', card);
+    if (state.owned.includes(item.id)) { btn.disabled = true; return; }
+    btn.disabled = state.coins < item.price;
+  });
+}
+
+document.addEventListener('click', e => {
+  const buy = e.target.closest('[data-buy]');
+  if (buy) {
+    const item = SHOP.find(i => i.id === buy.dataset.buy);
+    if (!item || state.owned.includes(item.id)) return;
+    if (state.coins < item.price) { toast('Не хватает ₽', 'bad'); blip(160, .12, 'sawtooth'); return; }
+    state.coins -= item.price;
+    state.owned.push(item.id);
+    save();
+    renderWallet();
+    renderShop();
+    toast('Куплено: ' + item.name, 'good');
+    blip(720, .08); setTimeout(() => blip(980, .1), 70);
+    return;
+  }
+  const go = e.target.closest('[data-go]');
+  if (go) { showView(go.dataset.go); return; }
+  const nav = e.target.closest('.navbtn');
+  if (nav) { showView(nav.dataset.view); }
+});
+
+function showView(id) {
+  if (!$('#view-' + id)) id = 'home';
+  $$('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + id));
+  $$('.navbtn').forEach(b => b.classList.toggle('active', b.dataset.view === id));
+  if (id !== 'memes') stopMemes();
+  if (id !== 'vape') stopVape();
+  if (id !== 'bee') stopBee();
+  if (id === 'bee') requestAnimationFrame(resizeBee);
+  try { history.replaceState(null, '', '#' + id); } catch (e) {}
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+const MM = {
+  running: false, raf: null, last: 0, t: 0, spawnTimer: 0, spawnEvery: 1.35,
+  customers: [], served: 0, lost: 0, best: 0, streak: 0,
+  priceLvl: 0, spawnLvl: 0, autoLvl: 0, autoTimer: 0,
+  price: 22
+};
+
+const MM_CUST = ['🧑', '👩', '🧔', '👵', '👨‍🎤', '🧑‍💻', '👩‍🦰', '🧑‍🚀', '👶', '🕵️', '🧙', '🧟'];
+const MM_MEMES = ['🐸', '💀', '🤡', '👽', '🍕', '🔥', '🦆', '🗿'];
+
+function mmStart() {
+  stopMemes();
+  const arena = $('#mmArena');
+  $$('.cust', arena).forEach(c => c.remove());
+  $('#mmEmpty').classList.add('hidden');
+  Object.assign(MM, {
+    running: true, t: 0, spawnTimer: 0, customers: [], served: 0, lost: 0,
+    best: 0, streak: 0, autoTimer: 0
+  });
+  MM.spawnEvery = 1.35 - MM.spawnLvl * 0.14;
+  MM.price = 22 + MM.priceLvl * 9;
+  $('#mmStart').textContent = 'Смена идёт...';
+  $('#mmStart').disabled = true;
+  mmSpawn();
+  MM.last = performance.now();
+  MM.raf = requestAnimationFrame(mmLoop);
+}
+
+function mmSpawn() {
+  const arena = $('#mmArena');
+  const el = document.createElement('div');
+  el.className = 'cust';
+  const x = 10 + Math.random() * 80;
+  const y = 14 + Math.random() * 70;
+  const patience = Math.max(2.2, 4.6 - MM.t * 0.03);
+  const price = Math.round((MM.price + Math.random() * 14) * (1 + MM.streak * 0.015));
+  el.style.left = x + '%';
+  el.style.top = y + '%';
+  el.innerHTML = '<div class="face">' + MM_CUST[(Math.random() * MM_CUST.length) | 0] + '</div>' +
+    '<div class="bar"><i></i></div><div class="tag">' + MM_MEMES[(Math.random() * MM_MEMES.length) | 0] + ' ' + price + '₽</div>';
+  el.addEventListener('pointerdown', ev => {
+    ev.preventDefault();
+    mmServe(el);
+  });
+  arena.appendChild(el);
+  MM.customers.push({ el, life: patience, max: patience, price, bar: $('.bar i', el) });
+}
+
+function mmServe(el) {
+  const c = MM.customers.find(x => x.el === el);
+  if (!c || !MM.running) return;
+  MM.customers = MM.customers.filter(x => x !== c);
+  c.el.remove();
+  MM.served++;
+  MM.streak++;
+  MM.best = Math.max(MM.best, c.price);
+  addCoins(c.price);
+  const f = document.createElement('div');
+  f.className = 'float';
+  f.textContent = '+' + c.price + '₽';
+  f.style.left = c.el.style.left;
+  f.style.top = c.el.style.top;
+  $('#mmArena').appendChild(f);
+  setTimeout(() => f.remove(), 800);
+  blip(520 + Math.min(MM.streak, 12) * 40, .07);
+  mmRenderStats();
+  mmRenderUpgrades();
+}
+
+function mmRenderStats() {
+  $('#mmServed').textContent = MM.served;
+  $('#mmLost').textContent = MM.lost;
+  $('#mmBest').textContent = fmt(MM.best);
+}
+
+function mmLoop(ts) {
+  if (!MM.running) return;
+  const dt = Math.min(0.05, (ts - MM.last) / 1000) || 0.016;
+  MM.last = ts;
+  MM.t += dt;
+  MM.spawnTimer += dt;
+  MM.spawnEvery = Math.max(0.42, 1.35 - MM.spawnLvl * 0.14 - MM.t * 0.004);
+  if (MM.spawnTimer > MM.spawnEvery) { MM.spawnTimer = 0; mmSpawn(); }
+
+  for (const c of MM.customers.slice()) {
+    c.life -= dt;
+    const p = Math.max(0, c.life / c.max);
+    c.bar.style.width = (p * 100) + '%';
+    c.bar.style.background = p > 0.5 ? '#b8ff3a' : p > 0.22 ? '#ffcc33' : '#ff4d5e';
+    if (c.life <= 0) {
+      MM.customers = MM.customers.filter(x => x !== c);
+      c.el.remove();
+      MM.lost++;
+      MM.streak = 0;
+      mmRenderStats();
+    }
+  }
+
+  if (MM.autoLvl > 0) {
+    MM.autoTimer += dt;
+    const every = Math.max(0.7, 3.2 - MM.autoLvl * 0.55);
+    if (MM.autoTimer >= every && MM.customers.length) {
+      MM.autoTimer = 0;
+      mmServe(MM.customers[0].el);
+    }
+  }
+  MM.raf = requestAnimationFrame(mmLoop);
+}
+
+function stopMemes() {
+  if (!MM.running) return;
+  MM.running = false;
+  if (MM.raf) cancelAnimationFrame(MM.raf);
+  MM.raf = null;
+  state.best.memes = Math.max(state.best.memes, MM.served);
+  save();
+  $('#mmStart').textContent = 'Начать смену';
+  $('#mmStart').disabled = false;
+  $('#mmEmpty').classList.remove('hidden');
+  $('#mmEmpty').innerHTML = 'Смена закрыта. Продано: <b>' + MM.served + '</b><br>Ушли ни с чем: ' + MM.lost;
+}
+
+const MM_UPG = [
+  { key: 'priceLvl', name: 'Новый мем дня', base: 40, max: 8, desc: l => 'Цена за мем +9₽ (сейчас ' + (22 + l * 9) + '₽)' },
+  { key: 'spawnLvl', name: 'Реклама в тиктоке', base: 55, max: 6, desc: l => 'Покупатели приходят чаще' },
+  { key: 'autoLvl', name: 'Стажёр-шмель', base: 120, max: 5, desc: l => 'Сам продаёт одного каждые ' + Math.max(0.7, 3.2 - l * 0.55).toFixed(1) + 'с' }
+];
+
+function mmRenderUpgrades() {
+  $('#mmUpgrades').innerHTML = MM_UPG.map(u => {
+    const lvl = MM[u.key];
+    const cost = Math.round(u.base * Math.pow(1.75, lvl));
+    const maxed = lvl >= u.max;
+    return '<button data-upg="' + u.key + '"' + (maxed || state.coins < cost ? ' disabled' : '') + '>' +
+      '<b>' + u.name + ' <span class="lvl">ур.' + lvl + '</span></b>' +
+      '<small>' + (maxed ? 'максимум' : 'улучшить за ' + cost + ' ₽') + '</small>' +
+      '<small style="color:#6f6a90;margin-top:4px">' + u.desc(lvl) + '</small>' +
+      '</button>';
+  }).join('');
+}
+
+$('#mmUpgrades').addEventListener('click', e => {
+  const b = e.target.closest('[data-upg]');
+  if (!b) return;
+  const u = MM_UPG.find(x => x.key === b.dataset.upg);
+  const lvl = MM[u.key];
+  const cost = Math.round(u.base * Math.pow(1.75, lvl));
+  if (lvl >= u.max || state.coins < cost) return;
+  state.coins -= cost;
+  MM[u.key]++;
+  save();
+  renderWallet();
+  MM.price = 22 + MM.priceLvl * 9;
+  mmRenderUpgrades();
+  refreshAffordability();
+  toast(u.name + ' → ур.' + MM[u.key], 'good');
+  blip(880, .08);
+});
+
+$('#mmStart').addEventListener('click', mmStart);
+
+const FLAVORS = [
+  { id: 'watermelon', name: 'Арбузный лёд', emoji: '🍉', price: 60 },
+  { id: 'mango', name: 'Манго-баблгам', emoji: '🥭', price: 80 },
+  { id: 'cola', name: 'Кола-кринж', emoji: '🥤', price: 50 },
+  { id: 'blue', name: 'Синий туман', emoji: '🫐', price: 95 },
+  { id: 'mint', name: 'Мятный удар', emoji: '🌿', price: 45 }
+];
+const VP_START_QTY = 8;
+const VP_TIME = 75;
+
+const VP = { running: false, raf: null, last: 0, time: VP_TIME, money: 0, combo: 0, stock: {}, cust: null, served: 0, missed: 0, patienceEl: null };
+
+function vpReset() {
+  VP.stock = {};
+  FLAVORS.forEach(f => { VP.stock[f.id] = VP_START_QTY; });
+  VP.time = VP_TIME;
+  VP.money = 0;
+  VP.combo = 0;
+  VP.served = 0;
+  VP.missed = 0;
+  VP.cust = null;
+}
+
+function vpRenderFlavors() {
+  $('#vpFlavors').innerHTML = FLAVORS.map(f => {
+    const q = VP.stock[f.id] || 0;
+    return '<button class="flavor" data-flavor="' + f.id + '"' + (q <= 0 ? ' disabled' : '') + '>' +
+      '<span class="qty">' + q + '</span>' +
+      '<span class="fl-emoji">' + f.emoji + '</span>' +
+      '<b>' + f.name + '</b>' +
+      '<small>' + f.price + '₽ за штуку</small>' +
+      '</button>';
+  }).join('');
+}
+
+function vpLeft() {
+  return FLAVORS.reduce((s, f) => s + (VP.stock[f.id] || 0), 0);
+}
+
+function vpRenderStats() {
+  $('#vpLeft').textContent = vpLeft();
+  $('#vpMoney').textContent = fmt(VP.money);
+  $('#vpCombo').textContent = 'x' + (1 + Math.min(VP.combo, 10) * 0.15).toFixed(2).replace('.00', '');
+  $('#vpTime').textContent = Math.ceil(VP.time);
+}
+
+function vpNewCustomer() {
+  if (vpLeft() <= 0) { vpWin(); return; }
+  const pool = FLAVORS.filter(f => VP.stock[f.id] > 0);
+  const f = pool[(Math.random() * pool.length) | 0];
+  const vip = Math.random() < 0.16;
+  const patience = Math.max(2.0, 3.8 - (VP_TIME - VP.time) * 0.022);
+  VP.cust = { flavor: f.id, vip, patience, max: patience };
+  const box = $('#vpCustBox');
+  $('.who', box).textContent = vip ? '🕶️' : ['🧑', '👩', '🧔', '👨‍🎤', '🧑‍💻', '🧙'][(Math.random() * 6) | 0];
+  $('#vpWant').innerHTML = 'Хочу <em>' + f.name + '</em>';
+  $('#vpOffer').textContent = (vip ? 'VIP: платит x2 · ' : '') + 'ждёт...';
+  VP.patienceEl = $('#vpPatience');
+  VP.patienceEl.style.width = '100%';
+}
+
+function vpStart() {
+  stopVape();
+  vpReset();
+  vpRenderFlavors();
+  vpRenderStats();
+  vpNewCustomer();
+  VP.running = true;
+  VP.last = performance.now();
+  $('#vpStart').textContent = 'Лавка открыта';
+  $('#vpStart').disabled = true;
+  VP.raf = requestAnimationFrame(vpLoop);
+}
+
+function vpLoop(ts) {
+  if (!VP.running) return;
+  const dt = Math.min(0.05, (ts - VP.last) / 1000) || 0.016;
+  VP.last = ts;
+  VP.time -= dt;
+  if (VP.time <= 0) { VP.time = 0; vpRenderStats(); vpLose(); return; }
+
+  if (VP.cust) {
+    VP.cust.patience -= dt;
+    const p = Math.max(0, VP.cust.patience / VP.cust.max);
+    if (VP.patienceEl) VP.patienceEl.style.width = (p * 100) + '%';
+    if (VP.cust.patience <= 0) {
+      VP.combo = 0;
+      VP.missed++;
+      toast('Клиент ушёл', 'bad');
+      blip(150, .12, 'sawtooth');
+      vpNewCustomer();
+    }
+  }
+  vpRenderStats();
+  VP.raf = requestAnimationFrame(vpLoop);
+}
+
+function vpSell(id) {
+  if (!VP.running || !VP.cust) return;
+  if ((VP.stock[id] || 0) <= 0) { toast('Этого вкуса нет', 'bad'); return; }
+  const f = FLAVORS.find(x => x.id === id);
+  if (VP.cust.flavor === id) {
+    VP.stock[id]--;
+    VP.combo++;
+    const mul = 1 + Math.min(VP.combo, 10) * 0.15;
+    const gain = Math.round(f.price * (VP.cust.vip ? 2 : 1) * mul);
+    VP.money += gain;
+    VP.served++;
+    toast('+' + gain + ' ₽' + (VP.cust.vip ? ' (VIP)' : ''), 'good');
+    blip(600 + Math.min(VP.combo, 10) * 50, .07);
+    vpRenderFlavors();
+    vpRenderStats();
+    if (vpLeft() <= 0) { vpWin(); return; }
+    vpNewCustomer();
+  } else {
+    VP.stock[id]--;
+    VP.combo = 0;
+    toast('Не тот вкус — товар выброшен', 'bad');
+    blip(140, .14, 'sawtooth');
+    vpRenderFlavors();
+    vpRenderStats();
+    if (vpLeft() <= 0) { vpWin(); return; }
+  }
+}
+
+function vpWin() {
+  const bonus = 320 + Math.round(VP.time * 12);
+  const total = VP.money + bonus;
+  addCoins(total);
+  state.best.vape = Math.max(state.best.vape, Math.round(VP.money));
+  save();
+  VP.running = false;
+  if (VP.raf) cancelAnimationFrame(VP.raf);
+  VP.raf = null;
+  $('#vpStart').textContent = 'Открыть лавку';
+  $('#vpStart').disabled = false;
+  $('#vpWant').textContent = 'ВСЁ ПРОДАНО!';
+  $('#vpOffer').textContent = 'выручка ' + fmt(VP.money) + ' ₽ + бонус ' + fmt(bonus) + ' ₽';
+  VP.cust = null;
+  toast('Распродано! +' + fmt(total) + ' ₽', 'good');
+  blip(660, .1); setTimeout(() => blip(880, .1), 90); setTimeout(() => blip(1180, .16), 180);
+}
+
+function vpLose() {
+  addCoins(Math.round(VP.money * 0.5));
+  VP.running = false;
+  if (VP.raf) cancelAnimationFrame(VP.raf);
+  VP.raf = null;
+  $('#vpStart').textContent = 'Попробовать снова';
+  $('#vpStart').disabled = false;
+  VP.cust = null;
+  $('#vpWant').textContent = 'Время вышло';
+  $('#vpOffer').textContent = 'осталось товара: ' + vpLeft() + ' · вернули 50% выручки';
+  toast('Не успел. Остаток списан', 'bad');
+}
+
+function stopVape() {
+  if (!VP.running) return;
+  VP.running = false;
+  if (VP.raf) cancelAnimationFrame(VP.raf);
+  VP.raf = null;
+  $('#vpStart').textContent = 'Открыть лавку';
+  $('#vpStart').disabled = false;
+}
+
+$('#vpFlavors').addEventListener('click', e => {
+  const b = e.target.closest('[data-flavor]');
+  if (b) vpSell(b.dataset.flavor);
+});
+$('#vpStart').addEventListener('click', vpStart);
+
+const BEE = {
+  running: false, raf: null, last: 0, t: 0, angle: 0, angVel: 0,
+  keys: { left: false, right: false }, result: 0, gustT: 0, gust: 0
+};
+const beeCanvas = $('#beeCanvas');
+const beeCtx = beeCanvas.getContext('2d');
+let beeW = 600, beeH = 380, beeStars = [];
+
+function resizeBee() {
+  const rect = beeCanvas.getBoundingClientRect();
+  const w = Math.max(300, Math.round(rect.width || 600));
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  beeW = w; beeH = 380;
+  beeCanvas.width = Math.round(w * dpr);
+  beeCanvas.height = Math.round(beeH * dpr);
+  beeCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  beeStars = Array.from({ length: 70 }, () => ({
+    x: Math.random() * beeW, y: Math.random() * beeH,
+    r: Math.random() * 1.6 + 0.4, a: Math.random() * 0.6 + 0.15
+  }));
+  if (!BEE.running) renderBeeIdle();
+}
+
+function renderBeeIdle() {
+  drawBeeScene(0, 0);
+}
+
+function beeStart() {
+  if (BEE.running) return;
+  BEE.running = true;
+  BEE.t = 0; BEE.angle = 0; BEE.angVel = 0.15; BEE.result = 0;
+  BEE.gustT = 5; BEE.gust = 0;
+  $('#beeOverlay').classList.add('hidden');
+  $('#beeStatus').textContent = 'цель: 30 сек';
+  BEE.last = performance.now();
+  BEE.raf = requestAnimationFrame(beeLoop);
+  blip(420, .1);
+}
+
+function beeLoop(ts) {
+  if (!BEE.running) return;
+  const dt = Math.min(0.04, (ts - BEE.last) / 1000) || 0.016;
+  BEE.last = ts;
+  BEE.t += dt;
+
+  const inp = (BEE.keys.right ? 1 : 0) - (BEE.keys.left ? 1 : 0);
+  const noise = Math.sin(BEE.t * 1.9) * 0.5 + Math.sin(BEE.t * 3.1 + 1.7) * 0.34 + Math.sin(BEE.t * 5.3 + 0.4) * 0.2;
+  BEE.gustT -= dt;
+  if (BEE.gustT <= 0) { BEE.gustT = 3.4 + Math.random() * 2.4; BEE.gust = (Math.random() < 0.5 ? -1 : 1) * (0.9 + BEE.t * 0.02); }
+  BEE.gust *= 0.985;
+
+  const drift = noise * (0.85 + BEE.t * 0.05) + BEE.gust;
+  const acc = inp * 6.4 + BEE.angle * 2.35 + drift - BEE.angVel * 1.15;
+  BEE.angVel += acc * dt;
+  BEE.angle += BEE.angVel * dt;
+
+  if (Math.abs(BEE.angle) > 1.06) { beeFall(); return; }
+  if (BEE.t >= 30) { beeWin(); return; }
+
+  $('#beeTime').textContent = BEE.t.toFixed(1);
+  $('#beeStatus').textContent = Math.abs(BEE.angle) > 0.7 ? 'ДЕРЖИСЬ!' : 'цель: 30 сек';
+  drawBeeScene(BEE.angle, inp);
+  BEE.raf = requestAnimationFrame(beeLoop);
+}
+
+function beeFall() {
+  BEE.running = false;
+  if (BEE.raf) cancelAnimationFrame(BEE.raf);
+  BEE.raf = null;
+  BEE.result = BEE.t;
+  state.best.bee = Math.max(state.best.bee, BEE.t);
+  save();
+  const reward = Math.round(BEE.t * 9);
+  addCoins(reward);
+  $('#beeTime').textContent = BEE.t.toFixed(1);
+  $('#beeBest').textContent = state.best.bee.toFixed(1);
+  showBeeOverlay('Ты упал', 'Продержался ' + BEE.t.toFixed(1) + ' сек из 30. +' + reward + ' ₽', 'Ещё раз');
+  blip(200, .18, 'sawtooth');
+  drawBeeScene(BEE.angle, 0);
+}
+
+function beeWin() {
+  BEE.running = false;
+  if (BEE.raf) cancelAnimationFrame(BEE.raf);
+  BEE.raf = null;
+  BEE.result = 30;
+  state.best.bee = Math.max(state.best.bee, 30);
+  save();
+  const reward = 400;
+  addCoins(reward);
+  $('#beeTime').textContent = '30.0';
+  $('#beeBest').textContent = state.best.bee.toFixed(1);
+  showBeeOverlay('Ты удержался!', '30 секунд на Пояше. Награда: ' + reward + ' ₽', 'Снова');
+  blip(700, .1); setTimeout(() => blip(950, .12), 100); setTimeout(() => blip(1250, .18), 210);
+}
+
+function showBeeOverlay(title, text, btn) {
+  $('#beeOverTitle').textContent = title;
+  $('#beeOverText').textContent = text;
+  $('#beeOverBtn').textContent = btn;
+  $('#beeOverlay').classList.remove('hidden');
+}
+
+function stopBee() {
+  if (!BEE.running) return;
+  BEE.running = false;
+  if (BEE.raf) cancelAnimationFrame(BEE.raf);
+  BEE.raf = null;
+  BEE.keys.left = BEE.keys.right = false;
+}
+
+function drawBeeScene(angle, inp) {
+  const ctx = beeCtx;
+  const W = beeW, H = beeH;
+  ctx.clearRect(0, 0, W, H);
+
+  const bg = ctx.createRadialGradient(W / 2, H * 0.55, 40, W / 2, H * 0.55, Math.max(W, H) * 0.8);
+  bg.addColorStop(0, '#141029');
+  bg.addColorStop(1, '#05040a');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+
+  for (const s of beeStars) {
+    ctx.globalAlpha = s.a;
+    ctx.fillStyle = '#cfd3ff';
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+
+  const cx = W / 2, cy = H / 2 + 26;
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.rotate(angle);
+
+  drawBeeBody(ctx, BEE.t);
+  drawRider(ctx, inp, BEE.t);
+
+  ctx.restore();
+
+  if (Math.abs(angle) > 0.62) {
+    const danger = Math.min(1, (Math.abs(angle) - 0.62) / 0.44);
+    const vg = ctx.createRadialGradient(W / 2, H / 2, H * 0.25, W / 2, H / 2, H * 0.78);
+    vg.addColorStop(0, 'rgba(255,77,94,0)');
+    vg.addColorStop(1, 'rgba(255,77,94,' + (danger * 0.45).toFixed(3) + ')');
+    ctx.fillStyle = vg;
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  const gw = Math.min(240, W * 0.55), gh = 8;
+  const gx = (W - gw) / 2, gy = H - 26;
+  ctx.fillStyle = 'rgba(255,255,255,.12)';
+  roundRect(ctx, gx, gy, gw, gh, 4); ctx.fill();
+  const t = Math.max(-1, Math.min(1, angle / 1.06));
+  const markerX = gx + gw / 2 + (t * gw) / 2;
+  ctx.fillStyle = Math.abs(t) > 0.6 ? '#ff4d5e' : Math.abs(t) > 0.3 ? '#ffcc33' : '#b8ff3a';
+  ctx.beginPath();
+  ctx.arc(markerX, gy + gh / 2, 7, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+function drawBeeBody(ctx, t) {
+  const flap = Math.sin(t * 26) * 0.35;
+
+  ctx.save();
+  ctx.translate(-58, -46);
+  ctx.rotate(-0.5 + flap);
+  ctx.beginPath();
+  ctx.ellipse(0, 0, 46, 24, 0, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(255,255,255,.22)';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(255,255,255,.6)';
+  ctx.lineWidth = 3;
+  ctx.stroke();
+  ctx.restore();
+
+  ctx.save();
+  ctx.translate(58, -46);
+  ctx.rotate(0.5 - flap);
+  ctx.beginPath();
+  ctx.ellipse(0, 0, 46, 24, 0, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(255,255,255,.22)';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(255,255,255,.6)';
+  ctx.lineWidth = 3;
+  ctx.stroke();
+  ctx.restore();
+
+  ctx.beginPath();
+  ctx.ellipse(0, 0, 88, 66, 0, 0, Math.PI * 2);
+  ctx.fillStyle = '#ffd21f';
+  ctx.fill();
+
+  ctx.save();
+  ctx.clip();
+  ctx.fillStyle = '#241a08';
+  roundRect(ctx, -100, 27, 200, 16, 8); ctx.fill();
+  roundRect(ctx, -100, 48, 200, 14, 7); ctx.fill();
+  ctx.restore();
+
+  ctx.beginPath();
+  ctx.ellipse(0, 0, 88, 66, 0, 0, Math.PI * 2);
+  ctx.strokeStyle = '#1a1408';
+  ctx.lineWidth = 6;
+  ctx.stroke();
+
+  ctx.strokeStyle = '#1a1408';
+  ctx.lineWidth = 5;
+  ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(-30, -60); ctx.lineTo(-52, -92); ctx.stroke();
+  ctx.beginPath(); ctx.arc(-54, -96, 8, 0, Math.PI * 2); ctx.fillStyle = '#1a1408'; ctx.fill();
+  ctx.beginPath(); ctx.moveTo(30, -60); ctx.lineTo(52, -92); ctx.stroke();
+  ctx.beginPath(); ctx.arc(54, -96, 8, 0, Math.PI * 2); ctx.fill();
+
+  ctx.beginPath(); ctx.arc(-30, -18, 17, 0, Math.PI * 2);
+  ctx.fillStyle = '#fff'; ctx.fill();
+  ctx.strokeStyle = '#1a1408'; ctx.lineWidth = 3.5; ctx.stroke();
+  ctx.beginPath(); ctx.arc(30, -18, 17, 0, Math.PI * 2);
+  ctx.fillStyle = '#fff'; ctx.fill(); ctx.stroke();
+
+  const look = Math.sin(t * 0.9) * 4;
+  ctx.fillStyle = '#1a1408';
+  ctx.beginPath(); ctx.arc(-28 + look, -16, 8, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(32 + look, -16, 8, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#fff';
+  ctx.beginPath(); ctx.arc(-25 + look, -19, 2.6, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(35 + look, -19, 2.6, 0, Math.PI * 2); ctx.fill();
+
+  ctx.strokeStyle = '#1a1408';
+  ctx.lineWidth = 5;
+  ctx.beginPath();
+  ctx.moveTo(-42, -40); ctx.lineTo(-14, -33);
+  ctx.moveTo(42, -40); ctx.lineTo(14, -33);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.arc(0, 4, 14, 0.12 * Math.PI, 0.88 * Math.PI);
+  ctx.stroke();
+}
+
+function drawRider(ctx, inp, t) {
+  const lean = (inp || 0) * 10 + Math.sin(t * 9) * 1.5;
+  ctx.save();
+  ctx.translate(lean, -97);
+  ctx.scale(1.06, 1.06);
+
+  ctx.beginPath();
+  ctx.arc(0, -26, 15, 0, Math.PI * 2);
+  ctx.fillStyle = '#ffe0bd';
+  ctx.fill();
+  ctx.strokeStyle = '#1a1408';
+  ctx.lineWidth = 4;
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.arc(0, -32, 15.5, Math.PI * 1.08, Math.PI * 1.92);
+  ctx.fillStyle = '#8b5cff';
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.moveTo(-4, -13);
+  ctx.lineTo(-4, 12);
+  ctx.lineTo(5, 12);
+  ctx.lineTo(5, -13);
+  ctx.closePath();
+  ctx.fillStyle = '#35e6ff';
+  ctx.fill();
+  ctx.strokeStyle = '#1a1408';
+  ctx.lineWidth = 4;
+  ctx.stroke();
+
+  ctx.strokeStyle = '#1a1408';
+  ctx.lineWidth = 5;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(-3, -6); ctx.lineTo(-24, -18 + (inp || 0) * 6);
+  ctx.moveTo(4, -6); ctx.lineTo(25, -18 - (inp || 0) * 6);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(-3, 12); ctx.lineTo(-12, 26);
+  ctx.moveTo(4, 12); ctx.lineTo(13, 26);
+  ctx.stroke();
+
+  ctx.restore();
+}
+
+window.addEventListener('keydown', e => {
+  if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A' || e.key === 'ф' || e.key === 'Ф') {
+    BEE.keys.left = true;
+    if (BEE.running) e.preventDefault();
+  }
+  if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D' || e.key === 'в' || e.key === 'В') {
+    BEE.keys.right = true;
+    if (BEE.running) e.preventDefault();
+  }
+});
+window.addEventListener('keyup', e => {
+  if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A' || e.key === 'ф' || e.key === 'Ф') BEE.keys.left = false;
+  if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D' || e.key === 'в' || e.key === 'В') BEE.keys.right = false;
+});
+
+$$('[data-bee]').forEach(btn => {
+  const dir = btn.dataset.bee;
+  const on = ev => { ev.preventDefault(); BEE.keys[dir] = true; };
+  const off = ev => { ev.preventDefault(); BEE.keys[dir] = false; };
+  btn.addEventListener('pointerdown', on);
+  btn.addEventListener('pointerup', off);
+  btn.addEventListener('pointerleave', off);
+  btn.addEventListener('pointercancel', off);
+});
+
+$('#beeStart').addEventListener('click', beeStart);
+$('#beeOverBtn').addEventListener('click', beeStart);
+window.addEventListener('resize', () => { if ($('#view-bee').classList.contains('active')) resizeBee(); });
+
+$('#shareBtn').addEventListener('click', async () => {
+  const url = location.href;
+  try {
+    if (navigator.share) {
+      await navigator.share({ title: 'МЕМ-МАРКЕТ', text: 'Пояш и Пояша ждут', url });
+      return;
+    }
+  } catch (e) {}
+  try {
+    await navigator.clipboard.writeText(url);
+    toast('Ссылка скопирована', 'good');
+  } catch (e) {
+    toast('Скопируй из адресной строки', 'bad');
+  }
+});
+
+renderWallet();
+renderShop();
+mmRenderStats();
+mmRenderUpgrades();
+vpReset();
+vpRenderFlavors();
+vpRenderStats();
+$('#beeBest').textContent = state.best.bee.toFixed(1);
+renderBeeIdle();
+requestAnimationFrame(resizeBee);
+
+const startHash = location.hash.replace('#', '');
+if (startHash) showView(startHash);
+</script>
+</body>
+</html>
+
